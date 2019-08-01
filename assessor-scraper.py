@@ -1,11 +1,9 @@
 import xlwt
 import requests
 from bs4 import BeautifulSoup
-###############
-
 
 wb = xlwt.Workbook()
-sheet = wb.add_sheet('Test Sheet')
+sheet = wb.add_sheet('Properties')
 
 #write headers
 sheet.write(0,0,'Address')
@@ -41,6 +39,6 @@ for i in range(len(entries)):
     tables = soup.find_all('table')
 
 
-wb.save('example.xls')
+wb.save('Properties.xls')
 
 
