@@ -12,31 +12,36 @@ sheet.write(0,2,'Total Value (2020)')
 sheet.write(0,3,'Assessment Area')
 sheet.write(0,4,'Municipal District')
 
+row = 1
 
-url = 'http://qpublic9.qpublic.net/la_orleans_display.php?KEY=2201-JEFFERSONAV'
-sheet.write(1,1,url)
+with open('addresses.txt') as f:
+    for address in f:
+        address = address.split()
+        key = address[0] + '-' + address[1] + address[2]
+        url = 'http://qpublic9.qpublic.net/la_orleans_display.php?KEY=%s' % key
 
-html = requests.get(url)
+        sheet.write(row,1,url)
 
-soup = BeautifulSoup(html.content, 'lxml')
-print(soup.prettify())
-entries = soup.find_all('td')
-for i in range(len(entries)):
+        html = requests.get(url)
 
-    if 'Location Address' in str(entries[i]):
-        sheet.write(1,0, entries[i+1].text)    
+        soup = BeautifulSoup(html.content, 'lxml')
+        entries = soup.find_all('td')
+        for i in range(len(entries)):
 
-    if '2020' in str(entries[i]) and '*' in str(entries[i]):
-        price = ''.join(filter(lambda x: x.isdigit(), entries[i+3].text))
-        sheet.write(1,2, int(price))
+            if 'Location Address' in str(entries[i]):
+                sheet.write(row,0, entries[i+1].text)    
 
-    if 'Assessment Area' in str(entries[i]):
-        sheet.write(1,3, entries[i+1].text)
-    
-    if 'Municipal District' in str(entries[i]):
-        sheet.write(1,4, entries[i+1].text)
+            if '2020' in str(entries[i]) and '*' in str(entries[i]):
+                price = ''.join(filter(lambda x: x.isdigit(), entries[i+3].text))
+                sheet.write(row,2, int(price))
 
-    tables = soup.find_all('table')
+            if 'Assessment Area' in str(entries[i]):
+                sheet.write(row,3, entries[i+1].text)
+            
+            if 'Municipal District' in str(entries[i]):
+                sheet.write(row,4, entries[i+1].text)
+
+        row += 1
 
 
 wb.save('Properties.xls')
