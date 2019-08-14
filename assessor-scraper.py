@@ -86,6 +86,18 @@ if list_of_links:
                     # Age and Disability Freeze
                     sheet.write(row,12, entries[i+9].text)
                     sheet.write(row,13, entries[i+10].text)
+                if elem == 'Land Area (sq ft)':
+                    area = ''.join(filter(lambda x: x.isdigit(), entries[i+1].text))
+                    sheet.write(row,15, int(area))
+                if elem == 'Building Area (sq ft)':
+                    area = ''.join(filter(lambda x: x.isdigit(), entries[i+1].text))
+                    sheet.write(row,16, int(area))
+                if elem == 'Revised Bldg Area (sqft)':
+                    area = ''.join(filter(lambda x: x.isdigit(), entries[i+1].text))
+                    if area == '':
+                        sheet.write(row,17,area)
+                    else:
+                        sheet.write(row,17, int(area))
 
             print('property #%d written' % row)
             row += 1
